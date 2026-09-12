@@ -1,0 +1,82 @@
+{
+  "name": "ncm-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A local Windows desktop app for converting NCM audio files.",
+  "main": "electron/main.cjs",
+  "author": "3mber",
+  "copyright": "Copyright (c) 2026 3mber · MIT License",
+  "license": "MIT",
+  "scripts": {
+    "dev": "concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && electron .\"",
+    "build:web": "vite build",
+    "build": "npm run build:web && electron-builder --win portable",
+    "test": "vitest run",
+    "preview": "vite preview --host 127.0.0.1",
+    "icon": "node scripts/make-icon.cjs"
+  },
+  "dependencies": {
+    "ffmpeg-static": "5.2.0",
+    "lucide-react": "0.468.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "4.3.4",
+    "concurrently": "9.1.2",
+    "electron": "33.3.1",
+    "electron-builder": "25.1.8",
+    "rcedit": "^4.0.1",
+    "vite": "5.4.14",
+    "vitest": "2.1.8",
+    "wait-on": "8.0.1"
+  },
+  "build": {
+    "appId": "com.local.ncmstudio",
+    "productName": "NCM Studio",
+    "directories": {
+      "output": "release"
+    },
+    "afterPack": "scripts/after-pack.cjs",
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "licenses",
+        "to": "licenses"
+      },
+      {
+        "from": "THIRD-PARTY-NOTICES.md",
+        "to": "THIRD-PARTY-NOTICES.md"
+      },
+      {
+        "from": "LICENSE",
+        "to": "LICENSE.txt"
+      },
+      {
+        "from": "build/icon.ico",
+        "to": "icon.ico"
+      }
+    ],
+    "asarUnpack": [
+      "node_modules/ffmpeg-static/**/*"
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "NCM-Studio-${version}-Portable-${arch}.${ext}",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "NCM Studio"
+    }
+  }
+}
